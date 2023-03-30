@@ -35,9 +35,10 @@ public class Player : MonoBehaviour
         float rotateSpeed = 10f;
         transform.forward = Vector3.Slerp(transform.forward,moveDir, Time.deltaTime *rotateSpeed);
     }
-
+    //hahahaha
     public bool IsWalking()
     {
         return isWalking;
+        //viết nghịch vào đây
     }    
 }
