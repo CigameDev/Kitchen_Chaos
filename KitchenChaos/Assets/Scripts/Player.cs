@@ -6,7 +6,10 @@ public class Player : MonoBehaviour
 {
     [SerializeField]private float moveSpeed =7;
     [SerializeField]private GameInput gameInput;
+
     private bool isWalking;
+
+   
     void Update()
     {
         Vector2 inputVector = gameInput.GetMovementVectorNormalized();
