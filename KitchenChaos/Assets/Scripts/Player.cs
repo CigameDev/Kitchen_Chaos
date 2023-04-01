@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : MonoBehaviour
+public class Player : MonoBehaviour,IKitchenObjectParrent
 {
     public static Player Instance { get; private set; }
 
@@ -15,10 +15,12 @@ public class Player : MonoBehaviour
     [SerializeField]private float moveSpeed =7;
     [SerializeField]private GameInput gameInput;
     [SerializeField] private LayerMask countersLayermask;
+    [SerializeField] private Transform kitchenObjectHoldPoint;
 
     private bool isWalking;
     private Vector3 lastInteractDir;
     private ClearCounter selectedCounter;//quay don dep duoc chon
+    private KitchenObject kitchenObject;
 
     private void Awake()
     {
@@ -31,9 +33,10 @@ public class Player : MonoBehaviour
 
     private void GameInput_OnInteractAction(object sender, System.EventArgs e)
     {
+        //nhan nut E se sinh ra object gi do,co the la tomato,cheese
         if(selectedCounter !=null)
         {
-            selectedCounter.Interact();
+            selectedCounter.Interact(this);
         }    
         
     }
@@ -64,10 +67,10 @@ public class Player : MonoBehaviour
             {
                 //has clear counter
 
-                //clearCounter.Interact();
+                //kitchenObjectParrent.Interact();
                 if(clearCounter != selectedCounter)
                 {
-                    //selectedCounter = clearCounter;
+                    //selectedCounter = kitchenObjectParrent;
                     //OnSelectedCounterChanged?.Invoke(this, new OnSelectedCounterChangedEventArgs
                     //{
                     //    selectedCounter = this.selectedCounter
@@ -96,7 +99,7 @@ public class Player : MonoBehaviour
         isWalking = moveDir != Vector3.zero;
 
         float moveDistance = moveSpeed * Time.deltaTime;
-        float playerRadius = 0.4f;
+        float playerRadius = 0.35f;
         float playerHeight = 2f;
         bool canMove = !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * playerHeight, playerRadius, moveDir, moveDistance);
         //nhi?u khi b? dính t??ng không di chuy?n ???c,c?n check thêm
@@ -144,5 +147,27 @@ public class Player : MonoBehaviour
         {
             selectedCounter = this.selectedCounter
         });
-    }    
+    }
+
+    public Transform GetKitchenObjectFollowTransform()
+    {
+        return kitchenObjectHoldPoint;
+    }
+    public void SetKitchenObject(KitchenObject kitchenObject)
+    {
+        this.kitchenObject = kitchenObject;
+    }
+    public KitchenObject GetKitchenObject()
+    {
+        return this.kitchenObject;
+    }
+    public void ClearKitchenObject()
+    {
+        kitchenObject = null;
+    }
+
+    public bool HasKitchenObject()
+    {
+        return kitchenObject != null;
+    }
 }
