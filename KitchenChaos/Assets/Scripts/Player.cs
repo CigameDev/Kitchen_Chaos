@@ -61,7 +61,12 @@ public class Player : MonoBehaviour,IKitchenObjectParrent
         }    
         float interactDistance = 2f;
 
-        if(Physics.Raycast(transform.position, moveDir, out RaycastHit raycastHit, interactDistance,countersLayermask))
+        /*
+         * tai sao lai co lastInteract vi khi nha tay ra moveDir =0
+         * luc do mac du player dung im khong di chuyen,nen se ko tim thay clearCounter nua
+         * neu khong co lastInteractDir thi luc nao cung phai nhan phim di chuyen clearCounter moi dc chon
+         */
+        if(Physics.Raycast(transform.position, lastInteractDir, out RaycastHit raycastHit, interactDistance,countersLayermask))
         {
             if(raycastHit.transform.TryGetComponent(out ClearCounter clearCounter))
             {
@@ -90,6 +95,7 @@ public class Player : MonoBehaviour,IKitchenObjectParrent
         {
             SetSelectedCounter(null);
         }
+        Debug.Log(selectedCounter);
     }    
     private void HandleMovement()
     {
@@ -102,7 +108,7 @@ public class Player : MonoBehaviour,IKitchenObjectParrent
         float playerRadius = 0.35f;
         float playerHeight = 2f;
         bool canMove = !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * playerHeight, playerRadius, moveDir, moveDistance);
-        //nhi?u khi b? dính t??ng không di chuy?n ???c,c?n check thêm
+        //dinh tuong khong di chuyen nen can check them
         if (!canMove)
         {
             //cannot move towards modir
