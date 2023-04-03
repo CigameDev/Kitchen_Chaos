@@ -10,7 +10,7 @@ public class Player : MonoBehaviour,IKitchenObjectParrent
     public event EventHandler<OnSelectedCounterChangedEventArgs> OnSelectedCounterChanged;
     public class OnSelectedCounterChangedEventArgs : EventArgs
     {
-        public ClearCounter selectedCounter;
+        public BaseCounter selectedCounter;
     }
     [SerializeField]private float moveSpeed =7;
     [SerializeField]private GameInput gameInput;
@@ -19,7 +19,7 @@ public class Player : MonoBehaviour,IKitchenObjectParrent
 
     private bool isWalking;
     private Vector3 lastInteractDir;
-    private ClearCounter selectedCounter;//quay don dep duoc chon
+    private BaseCounter selectedCounter;//quay don dep duoc chon
     private KitchenObject kitchenObject;
 
     private void Awake()
@@ -63,17 +63,17 @@ public class Player : MonoBehaviour,IKitchenObjectParrent
 
         /*
          * tai sao lai co lastInteract vi khi nha tay ra moveDir =0
-         * luc do mac du player dung im khong di chuyen,nen se ko tim thay clearCounter nua
-         * neu khong co lastInteractDir thi luc nao cung phai nhan phim di chuyen clearCounter moi dc chon
+         * luc do mac du player dung im khong di chuyen,nen se ko tim thay baseCounter nua
+         * neu khong co lastInteractDir thi luc nao cung phai nhan phim di chuyen baseCounter moi dc chon
          */
         if(Physics.Raycast(transform.position, lastInteractDir, out RaycastHit raycastHit, interactDistance,countersLayermask))
         {
-            if(raycastHit.transform.TryGetComponent(out ClearCounter clearCounter))
+            if(raycastHit.transform.TryGetComponent(out BaseCounter baseCounter))
             {
                 //has clear counter
 
                 //kitchenObjectParrent.Interact();
-                if(clearCounter != selectedCounter)
+                if(baseCounter != selectedCounter)
                 {
                     //selectedCounter = kitchenObjectParrent;
                     //OnSelectedCounterChanged?.Invoke(this, new OnSelectedCounterChangedEventArgs
@@ -83,7 +83,7 @@ public class Player : MonoBehaviour,IKitchenObjectParrent
                     //    //SelectedCounter thu 2 la khai bao ban dau cua class player
                     //}) ;
 
-                    SetSelectedCounter(clearCounter);
+                    SetSelectedCounter(baseCounter);
                 }    
             }  
             else
@@ -95,7 +95,6 @@ public class Player : MonoBehaviour,IKitchenObjectParrent
         {
             SetSelectedCounter(null);
         }
-        Debug.Log(selectedCounter);
     }    
     private void HandleMovement()
     {
@@ -146,11 +145,12 @@ public class Player : MonoBehaviour,IKitchenObjectParrent
         float rotateSpeed = 10f;
         transform.forward = Vector3.Slerp(transform.forward, moveDir, Time.deltaTime * rotateSpeed);
     }    
-    private void SetSelectedCounter(ClearCounter selectedCounter)
+    private void SetSelectedCounter(BaseCounter selectedCounter)
     {
         this.selectedCounter = selectedCounter;
         OnSelectedCounterChanged?.Invoke(this, new OnSelectedCounterChangedEventArgs
         {
+            //selectedCounter o day la cua class OnSelectedCounterChangedEventArgs
             selectedCounter = this.selectedCounter
         });
     }
