@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-public class ContainerCounter : BaseCounter,IKitchenObjectParrent
+public class ContainerCounter : BaseCounter
 {
     public event EventHandler OnPlayerGrabbedKitchen;
 
@@ -13,8 +13,7 @@ public class ContainerCounter : BaseCounter,IKitchenObjectParrent
         if (!player.HasKitchenObject())
             //player dang khong cam kitchenObject nao thi moi duoc lay
         {
-            Transform kitchenObjectTransform = Instantiate(kitchenObjectSO.prefab);
-            kitchenObjectTransform.GetComponent<KitchenObject>().SetKitchenObjectParrent(player);
+            KitchenObject.SpawnKitchenObject(kitchenObjectSO, player);
             OnPlayerGrabbedKitchen?.Invoke(this, EventArgs.Empty);
         }
     }
