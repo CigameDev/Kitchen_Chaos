@@ -1,11 +1,20 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using static CuttingCounter;
 
-public class StoveCounter : BaseCounter
+public class StoveCounter : BaseCounter,IHasProgress
 {
-    private enum State
+    public event EventHandler<IHasProgress.OnProgressChangedEventAgrs> OnProgressChanged;//luu y doan nay do ke thua IHasProgress
+
+    public event EventHandler<OnStateChangedEventArgs> OnStateChanged;
+    public class OnStateChangedEventArgs : EventArgs
+    {
+        public State state;
+    }
+
+    public enum State
     {
         Idle,
         Frying,
@@ -35,6 +44,10 @@ public class StoveCounter : BaseCounter
                     break;
                 case State.Frying:
                     fryingTimer += Time.deltaTime;
+                    OnProgressChanged?.Invoke(this, new IHasProgress.OnProgressChangedEventAgrs
+                    {
+                        progressNormalized = fryingTimer / fryingRecipeSO.fryingTimerMax
+                    });
                     if (fryingTimer >= fryingRecipeSO.fryingTimerMax)
                     {
                         GetKitchenObject().DestroySelf();
@@ -43,16 +56,36 @@ public class StoveCounter : BaseCounter
                         state = State.Fried;//chien,neu sau qua trinh nay se bi chay(burned)
                         burningTimer = 0f;
                         burningRecipeSO = GetBurningRecipeSOWithInput(GetKitchenObject().GetKitchenObjectSO());
+
+                        OnStateChanged?.Invoke(this, new OnStateChangedEventArgs
+                        {
+                            state = state
+                        });
                     }
                     break;
                 case State.Fried:
                     burningTimer += Time.deltaTime;
+
+                    OnProgressChanged?.Invoke(this, new IHasProgress.OnProgressChangedEventAgrs
+                    {
+                        progressNormalized = burningTimer / burningRecipeSO.burningTimerMax
+                    });
+
                     if (burningTimer >= burningRecipeSO.burningTimerMax)
                     {
                         GetKitchenObject().DestroySelf();
                         KitchenObject.SpawnKitchenObject(burningRecipeSO.output, this);
                         //destroy di mieng thit chin di,sinh ra mieng thit chay
                         state = State.Burned;
+
+                        OnStateChanged?.Invoke(this, new OnStateChangedEventArgs
+                        {
+                            state = state
+                        });
+                        OnProgressChanged?.Invoke(this, new IHasProgress.OnProgressChangedEventAgrs
+                        {
+                            progressNormalized = 0f
+                        });
                     }
                     break;
                 case State.Burned:
@@ -77,6 +110,15 @@ public class StoveCounter : BaseCounter
             {
                 this.GetKitchenObject().SetKitchenObjectParrent(player);
                 state = State.Idle;
+
+                OnStateChanged?.Invoke(this, new OnStateChangedEventArgs
+                {
+                    state = state
+                });
+                OnProgressChanged?.Invoke(this, new IHasProgress.OnProgressChangedEventAgrs
+                {
+                    progressNormalized = 0f
+                }) ;
             }
         }
         else
@@ -92,6 +134,15 @@ public class StoveCounter : BaseCounter
                     fryingRecipeSO = GetFryingRecipeSOWithInput(GetKitchenObject().GetKitchenObjectSO());
                     state = State.Frying;
                     fryingTimer = 0f;
+
+                    OnStateChanged?.Invoke(this, new OnStateChangedEventArgs
+                    {
+                        state = state
+                    });
+                    OnProgressChanged?.Invoke(this, new IHasProgress.OnProgressChangedEventAgrs
+                    {
+                        progressNormalized =0f
+                    });
                 }
             }
             else
