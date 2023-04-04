@@ -1,7 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+/// <summary>
+/// script nay gan cho ContainerCounterVisual
+/// thuc hien animator dong mo containerCounterVisual
+/// </summary>
 public class ContainerCounterVisual : MonoBehaviour
 {
     [SerializeField] private ContainerCounter containerCounter;
