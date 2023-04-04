@@ -44,7 +44,7 @@ public class CuttingCounter : BaseCounter
                     player.GetKitchenObject().SetKitchenObjectParrent(this);
                     cuttingProgress = 0;
 
-                    CuttingRecipeSO cuttingRecipeSO = CuttingRecipeSOWithInput(GetKitchenObject().GetKitchenObjectSO());
+                    CuttingRecipeSO cuttingRecipeSO = GetCuttingRecipeSOWithInput(GetKitchenObject().GetKitchenObjectSO());
                     OnProgressChanged?.Invoke(this, new OnProgressChangedEventAgrs
                     {
                         progressNormalized = (float)cuttingProgress / cuttingRecipeSO.cuttingProgressMax
@@ -66,7 +66,7 @@ public class CuttingCounter : BaseCounter
         {
             cuttingProgress++;
             OnCut?.Invoke(this, EventArgs.Empty);
-            CuttingRecipeSO cuttingRecipeSO = CuttingRecipeSOWithInput(GetKitchenObject().GetKitchenObjectSO());
+            CuttingRecipeSO cuttingRecipeSO = GetCuttingRecipeSOWithInput(GetKitchenObject().GetKitchenObjectSO());
 
             OnProgressChanged?.Invoke(this, new OnProgressChangedEventAgrs
             {
@@ -84,19 +84,19 @@ public class CuttingCounter : BaseCounter
     }
     private bool HasRecipeWithInput(KitchenObjectSO kitchenObjectSO)
     {
-        CuttingRecipeSO cuttingRecipeSO = CuttingRecipeSOWithInput(kitchenObjectSO);
+        CuttingRecipeSO cuttingRecipeSO = GetCuttingRecipeSOWithInput(kitchenObjectSO);
         return cuttingRecipeSO != null;
     }    
     private KitchenObjectSO GetOutputForInput(KitchenObjectSO kitchenObjectSO)
     {
-        CuttingRecipeSO cuttingRecipeSO = CuttingRecipeSOWithInput(kitchenObjectSO);
+        CuttingRecipeSO cuttingRecipeSO = GetCuttingRecipeSOWithInput(kitchenObjectSO);
         if (cuttingRecipeSO != null)
         {
             return cuttingRecipeSO.output;
         }
         else return null;
     }    
-    private CuttingRecipeSO CuttingRecipeSOWithInput(KitchenObjectSO inputKitchenObjectSO)
+    private CuttingRecipeSO GetCuttingRecipeSOWithInput(KitchenObjectSO inputKitchenObjectSO)
     {
         foreach(CuttingRecipeSO cuttingRecipeSO in cuttingRecipeSOArray)
         {
