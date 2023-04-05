@@ -36,6 +36,7 @@ public class PlatesCounter : BaseCounter
                 platesSpawnAmount--;
                 KitchenObject.SpawnKitchenObject(platesKitchenObjectSO,player);
                 OnPlatesRemoved?.Invoke(this, EventArgs.Empty);
+                //player nhat lay 1 cai dia,phai remove 1 cai dia o tren counter
             }    
         }    
     }

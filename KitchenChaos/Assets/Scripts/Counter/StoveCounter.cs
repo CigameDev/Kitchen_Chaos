@@ -98,15 +98,33 @@ public class StoveCounter : BaseCounter,IHasProgress
     public override void Interact(Player player)
     {
         if (HasKitchenObject())
-        //quay co kitchenObject
+        //there is kitchenobject here
         {
             if (player.HasKitchenObject())
-            //player co kitchenObject
+            //player is carrying something
             {
+                if(player.GetKitchenObject().TryGetPlateKitchenObject(out PlateKitchenObject plateKitchenObject))
+                {
+                    if(plateKitchenObject.TryAddIngredient(GetKitchenObject().GetKitchenObjectSO()))
+                    {
+                        GetKitchenObject().DestroySelf();
 
+                        state = State.Idle;
+
+                        OnStateChanged?.Invoke(this, new OnStateChangedEventArgs
+                        {
+                            state = state
+                        });
+
+                        OnProgressChanged?.Invoke(this, new IHasProgress.OnProgressChangedEventAgrs
+                        {
+                            progressNormalized = 0f
+                        });
+                    }    
+                }    
             }
             else
-            //player khong co kitchenObject,lay kitchenobject do ra
+            //player is not carrying anything,take out
             {
                 this.GetKitchenObject().SetKitchenObjectParrent(player);
                 state = State.Idle;
@@ -122,13 +140,13 @@ public class StoveCounter : BaseCounter,IHasProgress
             }
         }
         else
-        //quay khong co kitchenObject
+        //there is not kitchenobject here
         {
             if (player.HasKitchenObject())
-            //player co kitchenObject
+            //player is carrying something
             {
                 if (HasRecipeWithInput(player.GetKitchenObject().GetKitchenObjectSO()))
-                //object ma player cam phai la 1 trong nhung object trong mang frying (tuc la co the cat dc moi de dc vao cuttingCounter)
+                //object ma player cam phai la 1 trong nhung object trong mang frying (tuc la co the nuong dc moi de dc vao StoveCounter)
                 {
                     player.GetKitchenObject().SetKitchenObjectParrent(this);
                     fryingRecipeSO = GetFryingRecipeSOWithInput(GetKitchenObject().GetKitchenObjectSO());
@@ -146,7 +164,7 @@ public class StoveCounter : BaseCounter,IHasProgress
                 }
             }
             else
-            //player khong co kitchenObject
+            //player is not carrying anything
             {
 
             }

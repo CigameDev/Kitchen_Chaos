@@ -19,24 +19,29 @@ public class CuttingCounter : BaseCounter,IHasProgress
     public override void Interact(Player player)
     {
         if (HasKitchenObject())
-        //quay co kitchenObject
+        //There is kitchenobject here
         {
             if (player.HasKitchenObject())
-            //player co kitchenObject
+            //player is carrying something
             {
-
+                if(player.GetKitchenObject().TryGetPlateKitchenObject(out PlateKitchenObject plateKitchenObject))
+                {
+                    if(plateKitchenObject.TryAddIngredient(GetKitchenObject().GetKitchenObjectSO()))
+                    {
+                        GetKitchenObject().DestroySelf();
+                    }    
+                }    
             }
-            else
-            //player khong co kitchenObject
+            else//player is not carrying anything
             {
                 this.GetKitchenObject().SetKitchenObjectParrent(player);
             }
         }
         else
-        //quay khong co kitchenObject
+        //KitchenObject is not here
         {
             if (player.HasKitchenObject())
-            //player co kitchenObject
+            //player is carrying something
             {
                 if (HasRecipeWithInput(player.GetKitchenObject().GetKitchenObjectSO()))
                     //object ma player cam phai la 1 trong nhung object trong mang cutting (tuc la co the cat dc moi de dc vao cuttingCounter)
@@ -51,8 +56,7 @@ public class CuttingCounter : BaseCounter,IHasProgress
                     }) ;
                 }
             }
-            else
-            //player khong co kitchenObject
+            else//player is not carrying anything
             {
 
             }

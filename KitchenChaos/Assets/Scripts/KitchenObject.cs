@@ -19,15 +19,6 @@ public class KitchenObject : MonoBehaviour
   
     public void SetKitchenObjectParrent(IKitchenObjectParrent kitchenObjectParrent)
     {
-        /*
-        * 2 clear counter A va B
-        * sinh ra 1 kitchenobject tai A(tien cham vao A va nhan E)
-        * nhan phim T(de chuyen kitchenobject tu A sang B)
-        * khi chuyen can set kitchenobject tai A bang null
-        * neu tai B da co 1 kitchenobject roi thi khong chuyen dc sang (error)
-        * dat vi tri cua kitchenobject vao transform dat san
-        * set localposition ve zero
-        */
         if (this.kitchenObjectParrent !=null)
         {
             this.kitchenObjectParrent.ClearKitchenObject();
@@ -50,6 +41,20 @@ public class KitchenObject : MonoBehaviour
     {
         kitchenObjectParrent.ClearKitchenObject();
         Destroy(gameObject);
+    }    
+    public bool TryGetPlateKitchenObject( out PlateKitchenObject plateKitchenObject)
+    {
+        //funtion nay kiem tra xem KitchenObject co phai la PlateKitchenObject k,neu co thi lay no ra
+        if(this is PlateKitchenObject)
+        {
+            plateKitchenObject = this as PlateKitchenObject;
+            return true;
+        }    
+        else
+        {
+            plateKitchenObject = null;
+            return false;
+        }    
     }    
     public static KitchenObject SpawnKitchenObject(KitchenObjectSO kitchenObjectSO,IKitchenObjectParrent kitchenObjectParrent)
     {
