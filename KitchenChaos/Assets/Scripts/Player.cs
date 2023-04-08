@@ -113,7 +113,7 @@ public class Player : MonoBehaviour,IKitchenObjectParrent
         isWalking = moveDir != Vector3.zero;
 
         float moveDistance = moveSpeed * Time.deltaTime;
-        float playerRadius = 0.35f;
+        float playerRadius = 0.7f;
         float playerHeight = 2f;
         bool canMove = !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * playerHeight, playerRadius, moveDir, moveDistance);
         //dinh tuong khong di chuyen nen can check them
