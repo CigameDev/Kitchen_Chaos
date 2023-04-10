@@ -39,7 +39,7 @@ public class DeliveryManager : MonoBehaviour
         }
     }
 
-    public void DeliveryRecipe(PlateKitchenObject plateKitchenObject)
+    public void DeliverRecipe(PlateKitchenObject plateKitchenObject)//giao thuc an 
     {
         for (int i = 0; i < waitingRecipeSOList.Count; i++)//duyet list mon an sinh ra ngau nhien
         {
