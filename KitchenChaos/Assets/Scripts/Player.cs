@@ -8,6 +8,8 @@ public class Player : MonoBehaviour,IKitchenObjectParrent
     public static Player Instance { get; private set; }
 
     public event EventHandler<OnSelectedCounterChangedEventArgs> OnSelectedCounterChanged;
+
+    public event EventHandler OnPickupSomething;
     public class OnSelectedCounterChangedEventArgs : EventArgs
     {
         public BaseCounter selectedCounter;
@@ -34,6 +36,8 @@ public class Player : MonoBehaviour,IKitchenObjectParrent
 
     private void GameInput_OnInteractAlternateAction(object sender, EventArgs e)
     {
+        if (!KitchenGameManager.Instance.IsGamePlaying()) return;//khong cat dc
+
         if (selectedCounter != null)
         {
             selectedCounter.InteractAlternate(this);
@@ -42,6 +46,8 @@ public class Player : MonoBehaviour,IKitchenObjectParrent
 
     private void GameInput_OnInteractAction(object sender, System.EventArgs e)
     {
+        if (!KitchenGameManager.Instance.IsGamePlaying()) return;//khong phai gameplaying thi khog interact dc
+
         //nhan nut E se sinh ra object gi do,co the la tomato,cheese
         if(selectedCounter !=null)
         {
@@ -171,6 +177,10 @@ public class Player : MonoBehaviour,IKitchenObjectParrent
     public void SetKitchenObject(KitchenObject kitchenObject)
     {
         this.kitchenObject = kitchenObject;
+        if(kitchenObject != null)
+        {
+            OnPickupSomething?.Invoke(this, EventArgs.Empty);
+        }    
     }
     public KitchenObject GetKitchenObject()
     {

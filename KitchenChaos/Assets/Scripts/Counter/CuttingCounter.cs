@@ -5,6 +5,13 @@ using UnityEngine;
 
 public class CuttingCounter : BaseCounter,IHasProgress
 {
+    public static event EventHandler OnAnyCut;
+
+    new public static void ResetStaticData()
+    {
+        OnAnyCut = null;
+    }    
+
     public event EventHandler<IHasProgress.OnProgressChangedEventAgrs> OnProgressChanged;//luu y doan nay do ke thua IHasProgress
     public event EventHandler OnCut;
     public class OnProgressChangedEventAgrs : EventArgs
@@ -69,7 +76,10 @@ public class CuttingCounter : BaseCounter,IHasProgress
         //neu CuttingCounter co kitchenObject && co the cut duoc
         {
             cuttingProgress++;
+
             OnCut?.Invoke(this, EventArgs.Empty);
+            OnAnyCut?.Invoke(this, EventArgs.Empty);
+
             CuttingRecipeSO cuttingRecipeSO = GetCuttingRecipeSOWithInput(GetKitchenObject().GetKitchenObjectSO());
 
             OnProgressChanged?.Invoke(this, new IHasProgress.OnProgressChangedEventAgrs

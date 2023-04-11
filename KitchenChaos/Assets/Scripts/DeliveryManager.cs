@@ -1,9 +1,14 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class DeliveryManager : MonoBehaviour
 {
+    public event EventHandler RecipeSpawned;
+    public event EventHandler RecipeCompleted;
+    public event EventHandler OnRecipeSuccess;
+    public event EventHandler OnRecipeFailed;
     public static DeliveryManager Instance { get; private set; }
 
     /// <summary>
@@ -17,6 +22,7 @@ public class DeliveryManager : MonoBehaviour
     private float spawnRecipeTimer = 4f;
     private float spawnRecipeTimerMax = 4f;
     private int waitingRecipeMax = 4;
+    private int successfullRecipesAmount;
 
     private void Awake()
     {
@@ -32,9 +38,11 @@ public class DeliveryManager : MonoBehaviour
             spawnRecipeTimer = spawnRecipeTimerMax;
             if (waitingRecipeSOList.Count < waitingRecipeMax)
             {
-                RecipeSO waitingRecipeSO = recipeListSO.recipeSOList[Random.Range(0, recipeListSO.recipeSOList.Count)];
-                Debug.Log(waitingRecipeSO.name);
+                RecipeSO waitingRecipeSO = recipeListSO.recipeSOList[UnityEngine.Random.Range(0, recipeListSO.recipeSOList.Count)];
+
                 waitingRecipeSOList.Add(waitingRecipeSO);
+
+                RecipeSpawned?.Invoke(this, EventArgs.Empty);
             }
         }
     }
@@ -68,12 +76,26 @@ public class DeliveryManager : MonoBehaviour
                 if(plateContentsMatchesRecipe)//thuc an trong dia khop voi 1 mon trong list
                 {
                     Debug.Log("giao hang dung mon an "+waitingRecipeSO.name);
+
                     waitingRecipeSOList.RemoveAt(i);
+                    successfullRecipesAmount++;
+
+                    RecipeCompleted?.Invoke(this, EventArgs.Empty);
+                    OnRecipeSuccess?.Invoke(this, EventArgs.Empty);
                     return;
                 }    
             }
         }
         //khong chinh xac
-        Debug.Log("Ban giao hang khong dung mon an trong list");
+        OnRecipeFailed?.Invoke(this, EventArgs.Empty);
     }
+
+    public List<RecipeSO> GetRecipeSOList()
+    {
+        return waitingRecipeSOList;
+    }    
+    public int GetSuccessfullRecipesAmount()
+    {
+        return successfullRecipesAmount;
+    }    
 }
