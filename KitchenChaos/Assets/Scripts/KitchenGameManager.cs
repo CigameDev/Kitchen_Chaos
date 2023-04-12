@@ -21,10 +21,10 @@ public class KitchenGameManager : MonoBehaviour
     }    
 
     private State state;
-    private float waitingToStartTimer = 1f;
+    //private float waitingToStartTimer = 1f;
     private float countdownToStartTimer = 3f;
     private float gamePlayingTimer ;
-    private float gamePlayingTimerMax = 10f;
+    private float gamePlayingTimerMax = 60f;
     private bool isPauseGame = false;
     private void Awake()
     {
@@ -35,6 +35,20 @@ public class KitchenGameManager : MonoBehaviour
     private void Start()
     {
         GameInput.Instance.OnPauseAction += Instance_OnPauseAction;
+        GameInput.Instance.OnInteractAction += GameInput_OnInteractAction;
+    }
+
+    private void GameInput_OnInteractAction(object sender, EventArgs e)
+    {
+        /*
+         * bat dau vao game o trang thai waitingToStart
+         * Nhan E (Interact chuyen sang trang thai CountdownToStart) thuc hien delegate OnStateChanged
+         */
+        if(state == State.WaitingToStart)
+        {
+            state = State.CountdownToStart;
+            OnStateChanged?.Invoke(this, EventArgs.Empty);
+        }    
     }
 
     private void Instance_OnPauseAction(object sender, EventArgs e)
@@ -47,12 +61,12 @@ public class KitchenGameManager : MonoBehaviour
         switch (state)
         {
             case State.WaitingToStart:
-                waitingToStartTimer -= Time.deltaTime;
-                if(waitingToStartTimer <= 0f)
-                {
-                    state = State.CountdownToStart;
-                    OnStateChanged?.Invoke(this, EventArgs.Empty);
-                }    
+                //waitingToStartTimer -= Time.deltaTime;
+                //if(waitingToStartTimer <= 0f)
+                //{
+                //    state = State.CountdownToStart;
+                //    OnStateChanged?.Invoke(this, EventArgs.Empty);
+                //}    
                 break;
             case State.CountdownToStart:
                 countdownToStartTimer -= Time.deltaTime;
